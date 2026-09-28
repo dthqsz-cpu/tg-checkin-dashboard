@@ -358,17 +358,5 @@
     "reward": null,
     "quiz": "none",
     "note": "备援触发，今天已经签过了，没有打扰机器人"
-  },
-  {
-    "date": "2026-09-28",
-    "time": "23:58",
-    "trigger": "manual",
-    "result": "unknown",
-    "streak": 18,
-    "month_days": 27,
-    "credits_before": 1484,
-    "reward": 6,
-    "quiz": "none",
-    "note": "本机演练：验证上报链路"
   }
 ]
