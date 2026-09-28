@@ -235,8 +235,10 @@
     var padT = 16;
     var padB = 30;
     var values = points.map(function (p) { return p.value; });
-    var min = Math.min.apply(null, values);
-    var max = Math.max.apply(null, values);
+    var dataMin = Math.min.apply(null, values);
+    var dataMax = Math.max.apply(null, values);
+    var min = dataMin;
+    var max = dataMax;
     if (max === min) { max = min + 1; }
     var span = max - min;
     min -= span * 0.15;
@@ -256,7 +258,7 @@
     svg.setAttribute('role', 'img');
     svg.setAttribute('aria-label', '积分余额折线图，从 ' + points[0].value + ' 变化到 ' + points[points.length - 1].value);
 
-    [min + (max - min) * 0.5, max - (max - min) * 0.15].forEach(function (tick) {
+    [dataMin, dataMax].forEach(function (tick) {
       var line = document.createElementNS(ns, 'line');
       line.setAttribute('class', 'grid-line');
       line.setAttribute('x1', padL);
@@ -268,7 +270,7 @@
       text.setAttribute('class', 'axis-text');
       text.setAttribute('x', '0');
       text.setAttribute('y', y(tick) + 4);
-      text.textContent = String(Math.round(tick));
+      text.textContent = String(tick);
       svg.appendChild(text);
     });
 
@@ -344,12 +346,12 @@
       else if (day.quiz === 'error') quiz = '出了，没答上';
       appendCell(tr, quiz);
 
-      var note = day.note || '';
+      var note = (day.signed && day.signed.note) || (day.problem && day.problem.note) || '';
+      if (!note && day.status === 'ok' && day.runs > day.ok) {
+        note = '当天共 ' + day.runs + ' 次触发，其中 ' + (day.runs - day.ok) + ' 次备援发现已签过、直接退出';
+      }
       if (!note && day.status === 'idle' && day.idle > 0) {
         note = '备援 ' + day.idle + ' 次，发现当天已签到，没有打扰机器人';
-      }
-      if (!note && day.runs > 1 && day.status === 'ok') {
-        note = '当天共 ' + day.runs + ' 次触发';
       }
       if (!note && record && record.result === 'already') note = '机器人回复「已经签过」';
       appendCell(tr, note || '', 'note');
@@ -376,12 +378,15 @@
     var box = document.getElementById('alert');
     var today = bjToday();
     var problems = [];
+    var dates = Object.keys(days).sort();
+    var first = dates[0];
 
     for (var i = 1; i <= 7; i += 1) {
       var date = shift(today, -i);
       var day = days[date];
       if (!day) {
-        problems.push(shortDate(date) + ' 一整天没有签到记录');
+        // 数据开始之前的日子不算漏签，不然刚上线那几天会满屏报警
+        if (first && date >= first) problems.push(shortDate(date) + ' 一整天没有签到记录');
       } else if (day.status === 'bad') {
         problems.push(shortDate(date) + ' 签到失败或结果未知' + (day.problem && day.problem.note ? '（' + day.problem.note + '）' : ''));
       }
