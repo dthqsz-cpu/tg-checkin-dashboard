@@ -28,11 +28,15 @@ jobs:
           # 首次运行时自动在仓库设置里把 Pages 的发布来源切成 GitHub Actions
           enablement: true
 
-      # 只把页面需要的文件打包，避免 .git 之类的东西进产物
+      # 只把页面需要的文件打包，避免 .git 之类的东西进产物。
+      # 顺手把资源地址里的 __VERSION__ 换成提交号：GitHub Pages 的缓存会留
+      # 十分钟左右，带上版本号以后，改完页面刷新就能看到新的。
       - name: 准备静态文件
         run: |
           mkdir -p _site
           cp -r index.html assets data _site/
+          sed -i "s/__VERSION__/${GITHUB_SHA::7}/g" _site/index.html
+          grep -o 'assets/[a-z]*\.css?v=[0-9a-f]*\|assets/[a-z]*\.js?v=[0-9a-f]*' _site/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
