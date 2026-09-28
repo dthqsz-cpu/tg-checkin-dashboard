@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>签到台账</title>
+<meta name="description" content="每日自动签到记录：签到日期、连续天数、积分变化。">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="sheet">
+
+  <header class="masthead">
+    <h1>签到台账</h1>
+    <p class="lede">每天凌晨自动签到一次。这张表只记日期、天数和积分，没有任何账号信息。</p>
+  </header>
+
+  <p id="alert" class="alert" hidden></p>
+
+  <section class="strip" aria-label="当前状态">
+    <div class="field">
+      <span class="field-label">今天</span>
+      <span class="field-value" id="v-today">—</span>
+      <span class="field-note" id="n-today">读取中</span>
+    </div>
+    <div class="field">
+      <span class="field-label">连续签到</span>
+      <span class="field-value num" id="v-streak">—</span>
+      <span class="field-note" id="n-streak">天</span>
+    </div>
+    <div class="field">
+      <span class="field-label">本月已签到</span>
+      <span class="field-value num" id="v-month">—</span>
+      <span class="field-note" id="n-month">天</span>
+    </div>
+    <div class="field">
+      <span class="field-label">积分余额</span>
+      <span class="field-value num" id="v-credits">—</span>
+      <span class="field-note" id="n-credits">CR</span>
+    </div>
+  </section>
+
+  <section class="block" id="block-calendar">
+    <div class="block-head">
+      <h2>签到日历</h2>
+      <p class="block-note" id="cal-range"></p>
+    </div>
+    <div class="cal-wrap">
+      <div class="cal-months" id="cal-months" aria-hidden="true"></div>
+      <div class="cal-body">
+        <div class="cal-weekdays" aria-hidden="true">
+          <span>一</span><span></span><span>三</span><span></span><span>五</span><span></span><span>日</span>
+        </div>
+        <div class="cal-grid" id="cal-grid" role="img" aria-label="最近 26 周的签到日历"></div>
+      </div>
+    </div>
+    <ul class="legend">
+      <li><i class="key key-ok"></i>签到成功</li>
+      <li><i class="key key-bad"></i>失败或没结果</li>
+      <li><i class="key key-idle"></i>只有备援触发</li>
+      <li><i class="key key-none"></i>没有记录</li>
+    </ul>
+  </section>
+
+  <section class="block" id="block-trend">
+    <div class="block-head">
+      <h2>积分趋势</h2>
+      <p class="block-note">按天记录签到后的余额</p>
+    </div>
+    <div class="trend" id="trend"></div>
+  </section>
+
+  <section class="block" id="block-table">
+    <div class="block-head">
+      <h2>每天明细</h2>
+      <p class="block-note" id="table-note"></p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">日期</th>
+            <th scope="col">签到时间</th>
+            <th scope="col">结果</th>
+            <th scope="col">连续</th>
+            <th scope="col">本月</th>
+            <th scope="col">当天积分</th>
+            <th scope="col">备用网址题</th>
+            <th scope="col">备注</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <p id="updated">数据读取中…</p>
+    <p>每次运行都会留一条记录，包括那些发现今天已经签过、直接安静退出的备援触发。数据不含账号、手机号、会话串或聊天原文。</p>
+  </footer>
+
+  <noscript><p class="alert">这个页面需要 JavaScript 才能把数据画出来。</p></noscript>
+</main>
+<script src="assets/app.js"></script>
+</body>
+</html>

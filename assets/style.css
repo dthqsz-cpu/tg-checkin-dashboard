@@ -1,0 +1,307 @@
+/* 签到台账 —— 一页纸的打卡记录。冷灰纸、细线分栏、没有卡片和阴影。 */
+
+:root {
+  --paper: #e7ebee;
+  --ink: #141d26;
+  --ink-soft: #5b6874;
+  --rule: #c9d1d8;
+  --rule-soft: #d8dee4;
+  --sign: #1c7a62;
+  --sign-fill: #35a184;
+  --miss: #ad4028;
+  --idle: #b4bfc8;
+  --none: #dde2e7;
+  --cell: 15px;
+  --gap: 3px;
+  --sans: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  --num: Georgia, "Times New Roman", "Songti SC", "SimSun", serif;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 16px/1.65 var(--sans);
+}
+
+.sheet {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(28px, 6vw, 64px) clamp(18px, 4vw, 40px) 72px;
+}
+
+/* ---------- 抬头 ---------- */
+
+.masthead { border-bottom: 2px solid var(--ink); padding-bottom: 18px; }
+
+.masthead h1 {
+  margin: 0;
+  font-size: clamp(30px, 5.2vw, 46px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+}
+
+.lede {
+  margin: 10px 0 0;
+  max-width: 46em;
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+/* ---------- 异常提示 ---------- */
+
+.alert {
+  margin: 24px 0 0;
+  padding: 14px 16px;
+  border-left: 4px solid var(--miss);
+  background: #f2e4df;
+  color: #6d2a1a;
+  font-size: 15px;
+}
+
+.alert ul { margin: 6px 0 0; padding-left: 20px; }
+
+/* ---------- 四栏台账 ---------- */
+
+.strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 30px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 18px 20px 20px;
+  border-left: 1px solid var(--rule-soft);
+  min-width: 0;
+}
+
+.field:first-child { border-left: 0; padding-left: 0; }
+
+.field-label {
+  color: var(--ink-soft);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+.field-value {
+  font-size: clamp(22px, 3.4vw, 30px);
+  font-weight: 600;
+  line-height: 1.25;
+  word-break: break-all;
+}
+
+.field-value.num {
+  font-family: var(--num);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(30px, 4.6vw, 46px);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.field-note {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.ok-text { color: var(--sign); }
+.bad-text { color: var(--miss); }
+
+/* ---------- 区块 ---------- */
+
+.block { margin-top: 46px; }
+
+.block-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 18px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 8px;
+}
+
+.block-head h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.block-note { margin: 0; color: var(--ink-soft); font-size: 13px; }
+
+/* ---------- 日历 ---------- */
+
+.cal-wrap { margin-top: 18px; overflow-x: auto; padding-bottom: 4px; }
+
+.cal-months {
+  display: grid;
+  grid-template-columns: repeat(var(--weeks, 26), var(--cell));
+  gap: var(--gap);
+  margin-left: calc(2ch + 10px);
+  margin-bottom: 4px;
+  min-width: min-content;
+}
+
+.cal-months span {
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cal-body { display: flex; align-items: flex-start; gap: 10px; }
+
+.cal-weekdays {
+  display: grid;
+  grid-template-rows: repeat(7, var(--cell));
+  gap: var(--gap);
+  width: 2ch;
+  color: var(--ink-soft);
+  font-size: 10px;
+  line-height: var(--cell);
+  text-align: right;
+}
+
+.cal-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, var(--cell));
+  grid-auto-columns: var(--cell);
+  gap: var(--gap);
+}
+
+.cell {
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: 3px;
+  background: var(--none);
+}
+
+.cell-ok { background: var(--sign-fill); }
+.cell-bad { background: var(--miss); }
+.cell-idle { background: var(--idle); }
+.cell-future { background: transparent; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .cal-grid.ready .cell {
+    animation: cell-in 0.32s ease-out both;
+    animation-delay: calc(var(--i, 0) * 3ms);
+  }
+}
+
+@keyframes cell-in {
+  from { opacity: 0; transform: scale(0.82); }
+  to { opacity: 1; transform: none; }
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.legend li { display: flex; align-items: center; gap: 7px; }
+
+.key { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.key-ok { background: var(--sign-fill); }
+.key-bad { background: var(--miss); }
+.key-idle { background: var(--idle); }
+.key-none { background: var(--none); }
+
+/* ---------- 趋势 ---------- */
+
+.trend { margin-top: 18px; }
+
+.trend svg { display: block; width: 100%; height: auto; }
+
+.trend .grid-line { stroke: var(--rule-soft); stroke-width: 1; }
+.trend .axis-text { fill: var(--ink-soft); font-family: var(--sans); font-size: 12px; }
+.trend .area { fill: rgba(28, 122, 98, 0.1); }
+.trend .line { fill: none; stroke: var(--sign); stroke-width: 2; stroke-linejoin: round; }
+.trend .dot { fill: var(--sign); }
+
+/* ---------- 明细表 ---------- */
+
+.table-wrap { margin-top: 14px; overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+th, td {
+  padding: 9px 12px 9px 0;
+  text-align: left;
+  border-bottom: 1px solid var(--rule-soft);
+  white-space: nowrap;
+}
+
+th {
+  color: var(--ink-soft);
+  font-weight: 500;
+  font-size: 13px;
+  border-bottom-color: var(--rule);
+}
+
+td.date { font-family: var(--num); white-space: nowrap; }
+td.note { white-space: normal; color: var(--ink-soft); min-width: 12em; }
+
+.tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 2px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.tag-ok { background: rgba(28, 122, 98, 0.14); color: #14614d; }
+.tag-bad { background: rgba(173, 64, 40, 0.14); color: #8c3520; }
+.tag-idle { background: rgba(120, 133, 145, 0.16); color: #4e5b66; }
+.tag-wait { background: rgba(120, 133, 145, 0.16); color: #4e5b66; }
+
+tr.today td { background: rgba(53, 161, 132, 0.07); }
+
+/* ---------- 页脚 ---------- */
+
+.colophon {
+  margin-top: 52px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-size: 13px;
+  max-width: 60em;
+}
+
+.colophon p { margin: 0 0 6px; }
+
+/* ---------- 窄屏 ---------- */
+
+@media (max-width: 720px) {
+  .strip { grid-template-columns: repeat(2, 1fr); }
+  .field { padding: 14px 0 16px; border-left: 0; border-top: 1px solid var(--rule-soft); }
+  .field:nth-child(-n+2) { border-top: 0; }
+  .field:nth-child(even) { padding-left: 18px; border-left: 1px solid var(--rule-soft); }
+  .field:first-child, .field:nth-child(3) { padding-left: 0; }
+  :root { --cell: 13px; }
+}
+
+a { color: var(--sign); }
+
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
