@@ -358,5 +358,17 @@
     "reward": null,
     "quiz": "none",
     "note": "备援触发，今天已经签过了，没有打扰机器人"
+  },
+  {
+    "date": "2026-09-28",
+    "time": "19:05",
+    "trigger": "manual",
+    "result": "skipped",
+    "streak": null,
+    "month_days": null,
+    "credits_before": null,
+    "reward": null,
+    "quiz": "none",
+    "note": "今天已经签过了，本轮没有连 Telegram"
   }
 ]
