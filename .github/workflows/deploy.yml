@@ -35,8 +35,11 @@ jobs:
         run: |
           mkdir -p _site
           cp -r index.html assets data _site/
+          # 根目录下的站点验证文件（各种 *.txt）也要发布，不然访问会 404
+          cp ./*.txt _site/ 2>/dev/null || true
           sed -i "s/__VERSION__/${GITHUB_SHA::7}/g" _site/index.html
           grep -o 'assets/[a-z]*\.css?v=[0-9a-f]*\|assets/[a-z]*\.js?v=[0-9a-f]*' _site/index.html
+          ls -1 _site
 
       - uses: actions/upload-pages-artifact@v3
         with:
