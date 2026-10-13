@@ -1642,5 +1642,17 @@
     "reward": 6,
     "quiz": "none",
     "note": ""
+  },
+  {
+    "date": "2026-10-14",
+    "time": "05:11",
+    "trigger": "schedule",
+    "result": "skipped",
+    "streak": null,
+    "month_days": null,
+    "credits_before": null,
+    "reward": null,
+    "quiz": "none",
+    "note": "今天已经签过了，本轮没有连 Telegram"
   }
 ]
